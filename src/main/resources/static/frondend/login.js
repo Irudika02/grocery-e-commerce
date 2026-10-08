@@ -24,11 +24,15 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             messageElement.style.color = 'green';
             messageElement.innerText = 'Login successful!';
 
-// තත්පරයකින් Dashboard එකට Redirect කිරීම
+// User ගේ email එක Browser එකේ localStorage එකේ තාවකාලිකව save කර ගැනීම
+            const emailInput = document.getElementById('email').value;
+            localStorage.setItem('loggedInUser', emailInput);
+
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);
         }
+
         else {
             messageElement.style.color = 'red';
             messageElement.innerText = 'Invalid email or password.';

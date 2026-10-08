@@ -7,16 +7,32 @@
 </head>
 <body>
 
-<h2>Welcome to Your Dashboard!</h2>
+<!-- User ගේ Email එක පෙන්වන්න Heading එකට ID එකක් දුන්නා -->
+<h2 id="welcomeMsg">Welcome to Your Dashboard!</h2>
 <p>You have successfully logged in.</p>
 
 <button id="logoutBtn">Logout</button>
 
 <script>
+  // 1. Browser එකේ Save වුණු Email එක ලබා ගැනීම
+  const userEmail = localStorage.getItem('loggedInUser');
+
+  // 2. Email එකක් තියෙනවා නම් Heading එක වෙනස් කිරීම
+  if (userEmail) {
+    document.getElementById('welcomeMsg').innerText = `Welcome, ${userEmail}!`;
+  } else {
+// Email එක නැත්නම් (කෙලින්ම Dashboard එකට එන්න හැදුවොත්) Login එකට හරවා යැවීම
+    window.location.href = 'login.html';
+  }
+
+  // 3. Logout Logic එක
   document.getElementById('logoutBtn').addEventListener('click', function() {
-// Login page  redirect
+// Logout වෙද්දී localStorage එකේ තියෙන Email එක අයින් කිරීම
+    localStorage.removeItem('loggedInUser');
     window.location.href = 'login.html';
   });
 </script>
 </body>
 </html>
+
+
