@@ -17,14 +17,19 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             body: JSON.stringify(loginData)
         });
 
+
+
+
         if (response.ok) {
             messageElement.style.color = 'green';
             messageElement.innerText = 'Login successful!';
-            document.getElementById('loginForm').reset();
 
-// සාර්ථක වුණාට පස්සේ වෙනත් පිටුවකට (Dashboard) redirect කිරීමට අවශ්‍ය නම්:
-// window.location.href = 'dashboard.html';
-        } else {
+// තත්පරයකින් Dashboard එකට Redirect කිරීම
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+        }
+        else {
             messageElement.style.color = 'red';
             messageElement.innerText = 'Invalid email or password.';
         }
