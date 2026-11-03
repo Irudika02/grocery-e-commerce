@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
@@ -37,6 +39,18 @@ public class UserController {
                 })
                 .orElse(ResponseEntity.badRequest().body("User not found!"));
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(@RequestParam String email) {
+        Optional<User> user = userService.findByEmail(email);
+
+        if (((Optional<?>) user).isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.badRequest().body("User not found!");
+        }
+    }
+
 
 }
 
