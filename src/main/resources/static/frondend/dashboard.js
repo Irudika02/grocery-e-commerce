@@ -1,5 +1,45 @@
 document.addEventListener("DOMContentLoaded", function() {
     loadProducts();
+
+
+    const productForm = document.getElementById('productForm');
+    productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('productName').value;
+        const weight = document.getElementById('productWeight').value;
+        const price = document.getElementById('productPrice').value;
+
+        const productData = {
+            name: name,
+            weight: parseFloat(weight),
+            price: parseFloat(price)
+        };
+
+
+        fetch('http://localhost:8081/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to add product');
+            })
+            .then(data => {
+                alert('Product added successfully!');
+                productForm.reset();
+                loadProducts();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding product.');
+            });
+    });
 });
 
 function loadProducts() {
@@ -15,7 +55,6 @@ function loadProducts() {
             }
 
             products.forEach(product => {
-                product.price = undefined;
                 const productCard = `
 <div class="col-md-4 mb-4">
 <div class="card shadow-sm border-0 h-100 rounded-3">
@@ -34,3 +73,5 @@ function loadProducts() {
             console.error('Error fetching products:', error);
         });
 }
+
+
