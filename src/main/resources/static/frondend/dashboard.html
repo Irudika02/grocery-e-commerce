@@ -29,6 +29,33 @@
   </div>
 </div>
 
+<!-- Add Product Form Section -->
+<div class="container mt-4">
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <h4 class="card-title fw-bold text-secondary mb-3">Add New Product</h4>
+      <form id="productForm">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="productName" class="form-label">Product Name</label>
+            <input type="text" class="form-label form-control" id="productName" required placeholder="උදා: කැකුළු හාල්">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="productWeight" class="form-label">Weight (kg/g)</label>
+            <input type="number" step="any" class="form-control" id="productWeight" required placeholder="උදා: 1.0">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="productPrice" class="form-label">Price (Rs.)</label>
+            <input type="number" step="any" class="form-control" id="productPrice" required placeholder="උදා: 250.00">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success fw-bold">Save Product</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- External JavaScript File -->
