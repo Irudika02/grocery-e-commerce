@@ -16,7 +16,6 @@ public class Product {
     private double sellingPrice;
     private int stockQuantity;
 
-    // Constructors
     public Product() {}
 
     public Product(String name, double weight, double costPrice, double sellingPrice, int stockQuantity) {
@@ -27,7 +26,6 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

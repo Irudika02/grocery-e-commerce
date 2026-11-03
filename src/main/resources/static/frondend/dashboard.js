@@ -60,6 +60,10 @@ function loadProducts() {
 <p class="card-text text-danger mb-1 small">Cost: Rs. ${product.costPrice}</p>
 <h6 class="text-success fw-bold mt-1">Selling: Rs. ${product.sellingPrice}</h6>
 <span class="badge bg-info text-dark mt-2">Stock: ${product.stockQuantity}</span>
+
+<div class="mt-3">
+<button class="btn btn-danger btn-sm fw-bold w-100" onclick="deleteProduct(${product.id})">Delete</button>
+</div>
 </div>
 </div>
 </div>
@@ -70,5 +74,27 @@ function loadProducts() {
         .catch(error => {
             console.error('Error fetching products:', error);
         });
+}
+
+// Product එක Delete කරන Function එක
+function deleteProduct(id) {
+    if (confirm("Are you sure you want to delete this product?")) {
+        fetch(`http://localhost:8081/api/products/${id}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Product deleted successfully!");
+                    loadProducts(); // List එක Refresh කිරීම
+                } else {
+                    alert("Failed to delete product.");
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting product:', error);
+            });
+    }
+
+
 }
 
