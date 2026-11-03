@@ -38,15 +38,23 @@
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="productName" class="form-label">Product Name</label>
-            <input type="text" class="form-label form-control" id="productName" required placeholder="උදා: කැකුළු හාල්">
+            <input type="text" class="form-control" id="productName" required placeholder="උදා: කැකුළු හාල්">
           </div>
           <div class="col-md-4 mb-3">
             <label for="productWeight" class="form-label">Weight (kg/g)</label>
             <input type="number" step="any" class="form-control" id="productWeight" required placeholder="උදා: 1.0">
           </div>
           <div class="col-md-4 mb-3">
-            <label for="productPrice" class="form-label">Price (Rs.)</label>
-            <input type="number" step="any" class="form-control" id="productPrice" required placeholder="උදා: 250.00">
+            <label for="productCostPrice" class="form-label">Cost Price (Rs.) - ගන්න මිල</label>
+            <input type="number" step="any" class="form-control" id="productCostPrice" required placeholder="උදා: 200.00">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="productSellingPrice" class="form-label">Selling Price (Rs.) - විකුණන මිල</label>
+            <input type="number" step="any" class="form-control" id="productSellingPrice" required placeholder="උදා: 250.00">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="productStock" class="form-label">Stock Quantity - ස්ටොක් ප්‍රමාණය</label>
+            <input type="number" class="form-control" id="productStock" required placeholder="උදා: 50">
           </div>
         </div>
         <button type="submit" class="btn btn-success fw-bold">Save Product</button>
@@ -54,6 +62,7 @@
     </div>
   </div>
 </div>
+
 
 
 <!-- Bootstrap JS Bundle -->

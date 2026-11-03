@@ -1,21 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     loadProducts();
 
-
     const productForm = document.getElementById('productForm');
     productForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const name = document.getElementById('productName').value;
-        const weight = document.getElementById('productWeight').value;
-        const price = document.getElementById('productPrice').value;
-
         const productData = {
-            name: name,
-            weight: parseFloat(weight),
-            price: parseFloat(price)
+            name: document.getElementById('productName').value,
+            weight: parseFloat(document.getElementById('productWeight').value),
+            costPrice: parseFloat(document.getElementById('productCostPrice').value),
+            sellingPrice: parseFloat(document.getElementById('productSellingPrice').value),
+            stockQuantity: parseInt(document.getElementById('productStock').value)
         };
-
 
         fetch('http://localhost:8081/api/products', {
             method: 'POST',
@@ -61,7 +57,9 @@ function loadProducts() {
 <div class="card-body">
 <h5 class="card-title text-primary fw-bold">${product.name}</h5>
 <p class="card-text text-muted mb-1">Weight: ${product.weight}</p>
-<h6 class="text-success fw-bold mt-2">Rs. ${product.price}</h6>
+<p class="card-text text-danger mb-1 small">Cost: Rs. ${product.costPrice}</p>
+<h6 class="text-success fw-bold mt-1">Selling: Rs. ${product.sellingPrice}</h6>
+<span class="badge bg-info text-dark mt-2">Stock: ${product.stockQuantity}</span>
 </div>
 </div>
 </div>
@@ -73,5 +71,4 @@ function loadProducts() {
             console.error('Error fetching products:', error);
         });
 }
-
 
