@@ -10,9 +10,22 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // උදා: අල, පරිප්පු, සීනි
-    private double weight; // උදා: 1kg, 500g (weight එක කිලෝ ග්‍රෑම් හෝ ග්‍රෑම් වලින්)
-    private double price; // අදාළ බරට අදාළ මිල
+    private String name;
+    private double weight;
+    private double costPrice;
+    private double sellingPrice;
+    private int stockQuantity;
+
+    // Constructors
+    public Product() {}
+
+    public Product(String name, double weight, double costPrice, double sellingPrice, int stockQuantity) {
+        this.name = name;
+        this.weight = weight;
+        this.costPrice = costPrice;
+        this.sellingPrice = sellingPrice;
+        this.stockQuantity = stockQuantity;
+    }
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -24,6 +37,12 @@ public class Product {
     public double getWeight() { return weight; }
     public void setWeight(double weight) { this.weight = weight; }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public double getCostPrice() { return costPrice; }
+    public void setCostPrice(double costPrice) { this.costPrice = costPrice; }
+
+    public double getSellingPrice() { return sellingPrice; }
+    public void setSellingPrice(double sellingPrice) { this.sellingPrice = sellingPrice; }
+
+    public int getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
 }
