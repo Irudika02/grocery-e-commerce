@@ -3,38 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>User Dashboard</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<h2 id="welcomeMsg">Welcome to Your Dashboard!</h2>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">🛒 FreshGrocery</a>
+    <button class="btn btn-outline-light btn-sm" id="logoutBtn">Logout</button>
+  </div>
+</nav>
 
-<!-- User Details පෙන්නන්න කොටස -->
-<div id="profileDetails">
-  <p><strong>Email:</strong> <span id="userEmailDisplay">Loading...</span></p>
-  <p><strong>Name:</strong> <span id="userNameDisplay">Loading...</span></p>
+<!-- Main Content -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-4">
+          <h2 class="card-title text-success fw-bold" id="welcomeMsg">Welcome to Your Dashboard!</h2>
+          <p class="text-muted">Here are your profile details:</p>
+
+          <hr>
+
+          <div id="profileDetails" class="mt-4">
+            <div class="row mb-2">
+              <div class="col-sm-4 font-weight-bold text-secondary"><strong>Full Name:</strong></div>
+              <div class="col-sm-8"><span id="userNameDisplay" class="fw-semibold">Loading...</span></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-4 font-weight-bold text-secondary"><strong>Email Address:</strong></div>
+              <div class="col-sm-8"><span id="userEmailDisplay" class="fw-semibold">Loading...</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<button id="logoutBtn">Logout</button>
 
 <script>
   const userEmail = localStorage.getItem('loggedInUser');
 
   if (!userEmail) {
-// Login වෙලා නැත්නම් කෙළින්ම Login page එකට redirect කිරීම
     window.location.href = 'login.html';
   } else {
-// Backend එකෙන් User details ගෙන්න ගන්න Fetch Request එක
     fetch(`http://localhost:8081/api/users/profile?email=${userEmail}`)
             .then(response => {
-              if (!response.ok) {
-                throw new Error('Failed to fetch profile');
-              }
+              if (!response.ok) throw new Error('Failed to fetch profile');
               return response.json();
             })
             .then(user => {
-// Backend එකෙන් ආපු Data HTML එකට එකතු කිරීම
-              document.getElementById('welcomeMsg').innerText = `Welcome, ${user.name || user.email}!`;
+              document.getElementById('welcomeMsg').innerText = `Welcome back, ${user.name || user.email}!`;
               document.getElementById('userEmailDisplay').innerText = user.email;
               document.getElementById('userNameDisplay').innerText = user.name || 'N/A';
             })
@@ -43,7 +66,6 @@
             });
   }
 
-  // Logout Logic එක
   document.getElementById('logoutBtn').addEventListener('click', function() {
     localStorage.removeItem('loggedInUser');
     window.location.href = 'login.html';
