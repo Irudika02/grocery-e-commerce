@@ -7,31 +7,47 @@
 </head>
 <body>
 
-<!-- User ගේ Email එක පෙන්වන්න Heading එකට ID එකක් දුන්නා -->
 <h2 id="welcomeMsg">Welcome to Your Dashboard!</h2>
-<p>You have successfully logged in.</p>
+
+<!-- User Details පෙන්නන්න කොටස -->
+<div id="profileDetails">
+  <p><strong>Email:</strong> <span id="userEmailDisplay">Loading...</span></p>
+  <p><strong>Name:</strong> <span id="userNameDisplay">Loading...</span></p>
+</div>
 
 <button id="logoutBtn">Logout</button>
 
 <script>
-  // 1. Browser එකේ Save වුණු Email එක ලබා ගැනීම
   const userEmail = localStorage.getItem('loggedInUser');
 
-  // 2. Email එකක් තියෙනවා නම් Heading එක වෙනස් කිරීම
-  if (userEmail) {
-    document.getElementById('welcomeMsg').innerText = `Welcome, ${userEmail}!`;
-  } else {
-// Email එක නැත්නම් (කෙලින්ම Dashboard එකට එන්න හැදුවොත්) Login එකට හරවා යැවීම
+  if (!userEmail) {
+// Login වෙලා නැත්නම් කෙළින්ම Login page එකට redirect කිරීම
     window.location.href = 'login.html';
+  } else {
+// Backend එකෙන් User details ගෙන්න ගන්න Fetch Request එක
+    fetch(`http://localhost:8081/api/users/profile?email=${userEmail}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to fetch profile');
+              }
+              return response.json();
+            })
+            .then(user => {
+// Backend එකෙන් ආපු Data HTML එකට එකතු කිරීම
+              document.getElementById('welcomeMsg').innerText = `Welcome, ${user.name || user.email}!`;
+              document.getElementById('userEmailDisplay').innerText = user.email;
+              document.getElementById('userNameDisplay').innerText = user.name || 'N/A';
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
   }
 
-  // 3. Logout Logic එක
+  // Logout Logic එක
   document.getElementById('logoutBtn').addEventListener('click', function() {
-// Logout වෙද්දී localStorage එකේ තියෙන Email එක අයින් කිරීම
     localStorage.removeItem('loggedInUser');
     window.location.href = 'login.html';
   });
 </script>
 </body>
 </html>
-
