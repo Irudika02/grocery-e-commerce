@@ -63,6 +63,97 @@
   </div>
 </div>
 
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProductForm">
+          <input type="hidden" id="editProductId">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Product Name</label>
+            <input type="text" class="form-control" id="editProductName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Weight (kg/g)</label>
+            <input type="number" step="0.01" class="form-control" id="editProductWeight" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Cost Price (Rs.)</label>
+            <input type="number" step="0.01" class="form-control" id="editProductCostPrice" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Selling Price (Rs.)</label>
+            <input type="number" step="0.01" class="form-control" id="editProductSellingPrice" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Stock Quantity</label>
+            <input type="number" class="form-control" id="editProductStockQuantity" required>
+          </div>
+          <button type="submit" class="btn btn-success w-100 fw-bold">Update Product</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Modal එක ඕපන් කරලා පරණ Data ටික Form එකට පිරවීම
+  function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity) {
+    document.getElementById('editProductId').value = id;
+    document.getElementById('editProductName').value = name;
+    document.getElementById('editProductWeight').value = weight;
+    document.getElementById('editProductCostPrice').value = costPrice;
+    document.getElementById('editProductSellingPrice').value = sellingPrice;
+    document.getElementById('editProductStockQuantity').value = stockQuantity;
+
+    const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+    editModal.show();
+  }
+
+  // Edit Form එක Submit කළාම Update API එකට Data යැවීම
+  document.getElementById('editProductForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const id = document.getElementById('editProductId').value;
+    const updatedProduct = {
+      name: document.getElementById('editProductName').value,
+      weight: parseFloat(document.getElementById('editProductWeight').value),
+      costPrice: parseFloat(document.getElementById('editProductCostPrice').value),
+      sellingPrice: parseFloat(document.getElementById('editProductSellingPrice').value),
+      stockQuantity: parseInt(document.getElementById('editProductStockQuantity').value)
+    };
+
+    fetch(`http://localhost:8081/api/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedProduct)
+    })
+            .then(response => {
+              if (response.ok) {
+                alert("Product updated successfully!");
+                const modalElement = document.getElementById('editProductModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance.hide();
+                location.reload(); // Page එක Refresh කිරීම
+              } else {
+                alert("Failed to update product.");
+              }
+            })
+            .catch(error => {
+              console.error('Error updating product:', error);
+            });
+  });
+</script>
+
+
+
 
 
 <!-- Bootstrap JS Bundle -->

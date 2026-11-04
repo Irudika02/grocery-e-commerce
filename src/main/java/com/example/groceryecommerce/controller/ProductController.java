@@ -36,5 +36,21 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found!");
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    product.setName(updatedProduct.getName());
+                    product.setWeight(updatedProduct.getWeight());
+                    product.setCostPrice(updatedProduct.getCostPrice());
+                    product.setSellingPrice(updatedProduct.getSellingPrice());
+                    product.setStockQuantity(updatedProduct.getStockQuantity());
+                    Product savedProduct = productRepository.save(product);
+                    return ResponseEntity.ok(savedProduct);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }
 

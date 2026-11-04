@@ -64,6 +64,11 @@ function loadProducts() {
 <div class="mt-3">
 <button class="btn btn-danger btn-sm fw-bold w-100" onclick="deleteProduct(${product.id})">Delete</button>
 </div>
+<div class="mt-3 d-flex gap-2">
+<button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity})">Edit</button>
+
+</div>
+
 </div>
 </div>
 </div>
@@ -93,6 +98,18 @@ function deleteProduct(id) {
             .catch(error => {
                 console.error('Error deleting product:', error);
             });
+    }
+    // Modal එක ඕපන් කරලා පරණ Data ටික Form එකට පිරවීම
+    function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity) {
+        document.getElementById('editProductId').value = id;
+        document.getElementById('editProductName').value = name;
+        document.getElementById('editProductWeight').value = weight;
+        document.getElementById('editProductCostPrice').value = costPrice;
+        document.getElementById('editProductSellingPrice').value = sellingPrice;
+        document.getElementById('editProductStockQuantity').value = stockQuantity;
+
+        const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+        editModal.show();
     }
 
 
