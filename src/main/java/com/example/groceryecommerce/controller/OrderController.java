@@ -24,11 +24,14 @@ public class OrderController {
     // 2. අලුත් Order එකක් Save කිරීම (විකුණුමක් සිදු වූ විට)
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
+        System.out.println("--- NEW ORDER RECEIVED ---");
+        System.out.println("Customer: " + order.getCustomerName());
+        System.out.println("Total Price: " + order.getTotalPrice());
+        System.out.println("Total Cost: " + order.getTotalCost());
+
         double profit = order.getTotalPrice() - order.getTotalCost();
         order.setTotalProfit(profit);
 
         return orderRepository.save(order);
     }
-
-
 }
