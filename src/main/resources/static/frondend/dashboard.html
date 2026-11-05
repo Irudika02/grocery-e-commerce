@@ -101,6 +101,25 @@
   </div>
 </div>
 
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card text-white bg-primary shadow">
+      <div class="card-body">
+        <h5 class="card-title">Total Orders</h5>
+        <h3 id="totalOrdersCount">0</h3>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card text-white bg-success shadow">
+      <div class="card-body">
+        <h5 class="card-title">Total Revenue (Rs.)</h5>
+        <h3 id="totalRevenueAmount">0.00</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Modal එක ඕපන් කරලා පරණ Data ටික Form එකට පිරවීම
   function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity) {
@@ -150,6 +169,36 @@
               console.error('Error updating product:', error);
             });
   });
+
+  // Orders සහ Revenue ගණනය කර පෙන්වීම
+  function loadDashboardAnalytics() {
+    fetch('http://localhost:8081/api/orders')
+            .then(response => response.json())
+            .then(orders => {
+// Total Orders ගණන
+              const totalOrders = orders.length;
+              document.getElementById('totalOrdersCount').innerText = totalOrders;
+
+// Total Revenue ගණනය කිරීම
+              let revenue = 0;
+              orders.forEach(order => {
+                revenue += order.totalPrice;
+              });
+              document.getElementById('totalRevenueAmount').innerText = revenue.toFixed(2);
+            })
+            .catch(error => console.error('Error loading analytics:', error));
+  }
+
+  // Page එක Load වන විට Analytics ෆੰක්ෂන් එක ක්‍රියාත්මක කිරීම
+  window.onload = function() {
+// කලින් තිබුණු loadProducts() එකත් සමඟ මෙය ක්‍රියාත්මක වේ
+    if (typeof loadProducts === 'function') {
+      loadProducts();
+    }
+    loadDashboardAnalytics();
+  };
+
+
 </script>
 
 
@@ -160,6 +209,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- External JavaScript File -->
 <script src="dashboard.js"></script>
+
 </body>
 </html>
+
 
