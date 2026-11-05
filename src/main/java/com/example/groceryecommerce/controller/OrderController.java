@@ -10,7 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 @CrossOrigin(origins = "*")
-class OrderController {
+public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -24,6 +24,11 @@ class OrderController {
     // 2. අලුත් Order එකක් Save කිරීම (විකුණුමක් සිදු වූ විට)
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
+        double profit = order.getTotalPrice() - order.getTotalCost();
+        order.setTotalProfit(profit);
+
         return orderRepository.save(order);
     }
+
+
 }
