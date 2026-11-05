@@ -114,4 +114,26 @@ function deleteProduct(id) {
 
 
 }
+function loadDashboardAnalytics() {
+    fetch('http://localhost:8081/api/orders')
+        .then(response => response.json())
+        .then(orders => {
+            const totalOrders = orders.length;
+            document.getElementById('totalOrdersCount').innerText = totalOrders;
+
+            let revenue = 0;
+            let profit = 0;
+
+            orders.forEach(order => {
+                revenue += order.totalPrice;
+                profit += order.totalProfit;
+            });
+
+            document.getElementById('totalRevenueAmount').innerText = revenue.toFixed(2);
+            document.getElementById('totalProfitAmount').innerText = profit.toFixed(2);
+        })
+        .catch(error => console.error('Error loading analytics:', error));
+}
+
+
 
