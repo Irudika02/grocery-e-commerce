@@ -3,174 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grocery Store - Dashboard</title>
-  <!-- Bootstrap 5 CSS -->
+  <title>Grocery Admin Dashboard</title>
+  <!-- Bootstrap CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="#">🛒 Grocery Store Dashboard</a>
-    <div class="d-flex">
-      <a href="login.html" class="btn btn-outline-light btn-sm">Logout</a>
-    </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Grocery Admin Dashboard</a>
   </div>
 </nav>
 
-<!-- Products Section -->
-<div class="container mt-5">
-  <h3 class="fw-bold mb-4 text-dark">Available Grocery Products</h3>
+<div class="container">
 
-  <!-- Products Grid -->
-  <div class="row" id="productList">
-    <!-- Products will be loaded dynamically via dashboard.js -->
-  </div>
-</div>
-
-<!-- Add Product Form Section -->
-<div class="container mt-4">
-  <div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
-      <h4 class="card-title fw-bold text-secondary mb-3">Add New Product</h4>
-      <form id="productForm">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label for="productName" class="form-label">Product Name</label>
-            <input type="text" class="form-control" id="productName" required placeholder="උදා: කැකුළු හාල්">
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="productWeight" class="form-label">Weight (kg/g)</label>
-            <input type="number" step="any" class="form-control" id="productWeight" required placeholder="උදා: 1.0">
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="productCostPrice" class="form-label">Cost Price (Rs.) - ගන්න මිල</label>
-            <input type="number" step="any" class="form-control" id="productCostPrice" required placeholder="උදා: 200.00">
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="productSellingPrice" class="form-label">Selling Price (Rs.) - විකුණන මිල</label>
-            <input type="number" step="any" class="form-control" id="productSellingPrice" required placeholder="උදා: 250.00">
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="productStock" class="form-label">Stock Quantity - ස්ටොක් ප්‍රමාණය</label>
-            <input type="number" class="form-control" id="productStock" required placeholder="උදා: 50">
-          </div>
+  <!-- Analytics Cards (Orders, Revenue, Profit) -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow">
+        <div class="card-body">
+          <h5 class="card-title">Total Orders</h5>
+          <h3 id="totalOrdersCount">0</h3>
         </div>
-        <button type="submit" class="btn btn-success fw-bold">Save Product</button>
-      </form>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow">
+        <div class="card-body">
+          <h5 class="card-title">Total Revenue (Rs.)</h5>
+          <h3 id="totalRevenueAmount">0.00</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-warning shadow">
+        <div class="card-body">
+          <h5 class="card-title">Total Profit (Rs.)</h5>
+          <h3 id="totalProfitAmount">0.00</h3>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Product Management Section (ඔයාගේ කලින් තිබුණු කොටස් මෙතැනට වැටේ) -->
+  <div class="card shadow p-4">
+    <h4 class="mb-3">Product Management</h4>
+    <div id="productSection">
+      <!-- Products Table or Forms goes here -->
+    </div>
+  </div>
+
 </div>
 
-<!-- Edit Product Modal -->
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editProductForm">
-          <input type="hidden" id="editProductId">
-          <div class="mb-3">
-            <label class="form-label fw-bold">Product Name</label>
-            <input type="text" class="form-control" id="editProductName" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Weight (kg/g)</label>
-            <input type="number" step="0.01" class="form-control" id="editProductWeight" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Cost Price (Rs.)</label>
-            <input type="number" step="0.01" class="form-control" id="editProductCostPrice" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Selling Price (Rs.)</label>
-            <input type="number" step="0.01" class="form-control" id="editProductSellingPrice" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-bold">Stock Quantity</label>
-            <input type="number" class="form-control" id="editProductStockQuantity" required>
-          </div>
-          <button type="submit" class="btn btn-success w-100 fw-bold">Update Product</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Bootstrap JS Bundle CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="row mb-4">
-  <div class="col-md-6">
-    <div class="card text-white bg-primary shadow">
-      <div class="card-body">
-        <h5 class="card-title">Total Orders</h5>
-        <h3 id="totalOrdersCount">0</h3>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="card text-white bg-success shadow">
-      <div class="card-body">
-        <h5 class="card-title">Total Revenue (Rs.)</h5>
-        <h3 id="totalRevenueAmount">0.00</h3>
-      </div>
-    </div>
-  </div>
-</div>
-
+<!-- Custom JavaScript for Analytics -->
 <script>
-  // Modal එක ඕපන් කරලා පරණ Data ටික Form එකට පිරවීම
-  function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity) {
-    document.getElementById('editProductId').value = id;
-    document.getElementById('editProductName').value = name;
-    document.getElementById('editProductWeight').value = weight;
-    document.getElementById('editProductCostPrice').value = costPrice;
-    document.getElementById('editProductSellingPrice').value = sellingPrice;
-    document.getElementById('editProductStockQuantity').value = stockQuantity;
-
-    const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-    editModal.show();
-  }
-
-  // Edit Form එක Submit කළාම Update API එකට Data යැවීම
-  document.getElementById('editProductForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const id = document.getElementById('editProductId').value;
-    const updatedProduct = {
-      name: document.getElementById('editProductName').value,
-      weight: parseFloat(document.getElementById('editProductWeight').value),
-      costPrice: parseFloat(document.getElementById('editProductCostPrice').value),
-      sellingPrice: parseFloat(document.getElementById('editProductSellingPrice').value),
-      stockQuantity: parseInt(document.getElementById('editProductStockQuantity').value)
-    };
-
-    fetch(`http://localhost:8081/api/products/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedProduct)
-    })
-            .then(response => {
-              if (response.ok) {
-                alert("Product updated successfully!");
-                const modalElement = document.getElementById('editProductModal');
-                const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                modalInstance.hide();
-                location.reload(); // Page එක Refresh කිරීම
-              } else {
-                alert("Failed to update product.");
-              }
-            })
-            .catch(error => {
-              console.error('Error updating product:', error);
-            });
-  });
-
-  // Orders සහ Revenue ගණනය කර පෙන්වීම
+  // Orders, Revenue සහ Profit ගණනය කර පෙන්වීම
   function loadDashboardAnalytics() {
     fetch('http://localhost:8081/api/orders')
             .then(response => response.json())
@@ -179,28 +70,29 @@
               const totalOrders = orders.length;
               document.getElementById('totalOrdersCount').innerText = totalOrders;
 
-// Total Revenue ගණනය කිරීම
               let revenue = 0;
+              let profit = 0;
+
               orders.forEach(order => {
                 revenue += order.totalPrice;
+                profit += order.totalProfit;
               });
+
+// Revenue සහ Profit ඩොට් එකෙන් පසු දශම ස්ථාන 2කට පෙන්වීම
               document.getElementById('totalRevenueAmount').innerText = revenue.toFixed(2);
+              document.getElementById('totalProfitAmount').innerText = profit.toFixed(2);
             })
             .catch(error => console.error('Error loading analytics:', error));
   }
 
-  // Page එක Load වන විට Analytics ෆੰක්ෂන් එක ක්‍රියාත්මක කිරීම
+  // Page එක Load වන විට ක්‍රියාත්මක වීම
   window.onload = function() {
-// කලින් තිබුණු loadProducts() එකත් සමඟ මෙය ක්‍රියාත්මක වේ
     if (typeof loadProducts === 'function') {
-      loadProducts();
+      loadProducts(); // කලින් තිබුණු ප්‍රොඩක්ට් ලෝඩ් වන ෆන්ක්ෂන් එක ඇත්නම්
     }
     loadDashboardAnalytics();
   };
-
-
 </script>
-
 
 
 
