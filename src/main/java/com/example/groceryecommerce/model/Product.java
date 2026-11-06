@@ -16,6 +16,19 @@ public class Product {
     private double sellingPrice;
     private int stockQuantity;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+
     public Product() {}
 
     public Product(String name, double weight, double costPrice, double sellingPrice, int stockQuantity) {
@@ -43,4 +56,6 @@ public class Product {
 
     public int getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
+
+
 }
