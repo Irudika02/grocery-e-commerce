@@ -1,6 +1,7 @@
 package com.example.groceryecommerce.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,9 +13,15 @@ public class Order {
     private Long id;
 
     private String customerName;
-    private double totalPrice; // මුළු විකුණුම් මිල (Revenue)
-    private double totalCost; // මුළු තොග මිල (Cost)
-    private double totalProfit; // මුළු ලාභය (Profit)
+
+    @JsonProperty("totalPrice")
+    private double totalPrice;
+
+    @JsonProperty("totalCost")
+    private double totalCost;
+
+    @JsonProperty("totalProfit")
+    private double totalProfit;
 
     private LocalDateTime orderDate = LocalDateTime.now();
 
@@ -37,5 +44,3 @@ public class Order {
     public LocalDateTime getOrderDate() { return orderDate; }
     public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
 }
-
-
