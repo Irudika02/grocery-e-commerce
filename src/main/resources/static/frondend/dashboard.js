@@ -206,3 +206,20 @@ function loadDashboardAnalytics() {
         })
         .catch(error => console.error('Error loading analytics:', error));
 }
+// Filter Products by Search Input
+function filterProducts() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const productCards = document.querySelectorAll('#productList > div');
+
+    productCards.forEach(card => {
+        const titleElement = card.querySelector('.card-title');
+        if (titleElement) {
+            const productName = titleElement.textContent.toLowerCase();
+            if (productName.includes(searchInput)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    });
+}
