@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     loadProducts();
+    loadCategories(); // Categories ටික Dropdown එකට લોඩ් කරගන්න
     loadDashboardAnalytics();
 
 // Handle Add Product Form
@@ -12,7 +13,10 @@ document.addEventListener("DOMContentLoaded", function() {
             weight: parseFloat(document.getElementById('productWeight').value),
             costPrice: parseFloat(document.getElementById('productCostPrice').value),
             sellingPrice: parseFloat(document.getElementById('productSellingPrice').value),
-            stockQuantity: parseInt(document.getElementById('productStock').value)
+            stockQuantity: parseInt(document.getElementById('productStock').value),
+            category: {
+                id: parseInt(document.getElementById('productCategory').value)
+            }
         };
 
         fetch('http://localhost:8081/api/products', {
@@ -28,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert('Product added successfully!');
                 productForm.reset();
                 loadProducts();
+                loadDashboardAnalytics();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -45,7 +50,10 @@ document.addEventListener("DOMContentLoaded", function() {
             weight: parseFloat(document.getElementById('editProductWeight').value),
             costPrice: parseFloat(document.getElementById('editProductCostPrice').value),
             sellingPrice: parseFloat(document.getElementById('editProductSellingPrice').value),
-            stockQuantity: parseInt(document.getElementById('editProductStockQuantity').value)
+            stockQuantity: parseInt(document.getElementById('editProductStockQuantity').value),
+            category: {
+                id: parseInt(document.getElementById('editProductCategory').value)
+            }
         };
 
         fetch(`http://localhost:8081/api/products/${id}`, {
@@ -88,19 +96,21 @@ function loadProducts() {
             products.forEach(product => {
                 let stockAlertClass = product.stockQuantity <= 5 ? 'border border-danger bg-danger bg-opacity-10' : '';
                 let stockBadgeClass = product.stockQuantity <= 5 ? 'bg-danger' : 'bg-info text-dark';
+                let categoryName = product.category ? product.category.name : 'Uncategorized';
 
                 const productCard = `
 <div class="col-md-4 mb-4">
 <div class="card shadow-sm ${stockAlertClass} h-100 rounded-3">
 <div class="card-body">
 <h5 class="card-title text-primary fw-bold">${product.name}</h5>
+<p class="card-text text-muted mb-1">Category: <span class="badge bg-secondary">${categoryName}</span></p>
 <p class="card-text text-muted mb-1">Weight: ${product.weight}</p>
 <p class="card-text text-danger mb-1 small">Cost: Rs. ${product.costPrice}</p>
 <h6 class="text-success fw-bold mt-1">Selling: Rs. ${product.sellingPrice}</h6>
 <span class="badge ${stockBadgeClass} mt-2">Stock: ${product.stockQuantity} ${product.stockQuantity <= 5 ? '(Low Stock!)' : ''}</span>
 
 <div class="mt-3 d-flex gap-2">
-<button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity})">Edit</button>
+<button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity}, ${product.category ? product.category.id : ''})">Edit</button>
 <button class="btn btn-danger btn-sm fw-bold w-50" onclick="deleteProduct(${product.id})">Delete</button>
 </div>
 </div>
@@ -115,14 +125,40 @@ function loadProducts() {
         });
 }
 
+// Load Categories into Dropdowns
+function loadCategories() {
+    fetch('http://localhost:8081/api/categories')
+        .then(response => response.json())
+        .then(categories => {
+            const categorySelect = document.getElementById('productCategory');
+            const editCategorySelect = document.getElementById('editProductCategory');
+
+            if (categorySelect && editCategorySelect) {
+                categorySelect.innerHTML = '<option value="">Select Category</option>';
+                editCategorySelect.innerHTML = '<option value="">Select Category</option>';
+
+                categories.forEach(category => {
+                    const option = `<option value="${category.id}">${category.name}</option>`;
+                    categorySelect.innerHTML += option;
+                    editCategorySelect.innerHTML += option;
+                });
+            }
+        })
+        .catch(error => console.error('Error loading categories:', error));
+}
+
 // Open Edit Modal
-function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity) {
+function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity, categoryId) {
     document.getElementById('editProductId').value = id;
     document.getElementById('editProductName').value = name;
     document.getElementById('editProductWeight').value = weight;
     document.getElementById('editProductCostPrice').value = costPrice;
     document.getElementById('editProductSellingPrice').value = sellingPrice;
     document.getElementById('editProductStockQuantity').value = stockQuantity;
+
+    if (categoryId) {
+        document.getElementById('editProductCategory').value = categoryId;
+    }
 
     const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
     editModal.show();
