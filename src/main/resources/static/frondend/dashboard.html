@@ -86,12 +86,19 @@
       </form>
     </div>
   </div>
-  <!-- Search Bar Section -->
+
+  <!-- Search & Category Filter Section -->
   <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-md-6 mb-2 mb-md-0">
       <input type="text" class="form-control" id="searchInput" placeholder="🔍 Search products by name..." onkeyup="filterProducts()">
     </div>
+    <div class="col-md-6">
+      <select class="form-select" id="filterCategorySelect" onchange="filterProducts()">
+        <option value="">All Categories (සියලුම වර්ග)</option>
+      </select>
+    </div>
   </div>
+
 
   <!-- Available Products Section -->
 

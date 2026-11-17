@@ -97,9 +97,11 @@ function loadProducts() {
                 let stockAlertClass = product.stockQuantity <= 5 ? 'border border-danger bg-danger bg-opacity-10' : '';
                 let stockBadgeClass = product.stockQuantity <= 5 ? 'bg-danger' : 'bg-info text-dark';
                 let categoryName = product.category ? product.category.name : 'Uncategorized';
+                let categoryId = product.category ? product.category.id : '';
 
+// product-card-item සහ data-category-id එක එකතු කර ඇත
                 const productCard = `
-<div class="col-md-4 mb-4">
+<div class="col-md-4 mb-4 product-card-item" data-category-id="${categoryId}">
 <div class="card shadow-sm ${stockAlertClass} h-100 rounded-3">
 <div class="card-body">
 <h5 class="card-title text-primary fw-bold">${product.name}</h5>
@@ -110,7 +112,7 @@ function loadProducts() {
 <span class="badge ${stockBadgeClass} mt-2">Stock: ${product.stockQuantity} ${product.stockQuantity <= 5 ? '(Low Stock!)' : ''}</span>
 
 <div class="mt-3 d-flex gap-2">
-<button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity}, ${product.category ? product.category.id : ''})">Edit</button>
+<button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity}, ${categoryId})">Edit</button>
 <button class="btn btn-danger btn-sm fw-bold w-50" onclick="deleteProduct(${product.id})">Delete</button>
 </div>
 </div>
@@ -124,28 +126,31 @@ function loadProducts() {
             console.error('Error fetching products:', error);
         });
 }
-
-// Load Categories into Dropdowns
+// Load Categories into Dropdowns (Form එකට සහ Filter එකට දෙකටම)
 function loadCategories() {
     fetch('http://localhost:8081/api/categories')
         .then(response => response.json())
         .then(categories => {
             const categorySelect = document.getElementById('productCategory');
             const editCategorySelect = document.getElementById('editProductCategory');
+            const filterCategorySelect = document.getElementById('filterCategorySelect');
 
-            if (categorySelect && editCategorySelect) {
+            if (categorySelect && editCategorySelect && filterCategorySelect) {
                 categorySelect.innerHTML = '<option value="">Select Category</option>';
                 editCategorySelect.innerHTML = '<option value="">Select Category</option>';
+                filterCategorySelect.innerHTML = '<option value="">All Categories (සියලුම වර්ග)</option>';
 
                 categories.forEach(category => {
                     const option = `<option value="${category.id}">${category.name}</option>`;
                     categorySelect.innerHTML += option;
                     editCategorySelect.innerHTML += option;
+                    filterCategorySelect.innerHTML += option;
                 });
             }
         })
         .catch(error => console.error('Error loading categories:', error));
 }
+
 
 // Open Edit Modal
 function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity, categoryId) {
@@ -206,20 +211,25 @@ function loadDashboardAnalytics() {
         })
         .catch(error => console.error('Error loading analytics:', error));
 }
-// Filter Products by Search Input
+// Filter Products by Search Input & Category Dropdown
 function filterProducts() {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const productCards = document.querySelectorAll('#productList > div');
+    const selectedCategoryId = document.getElementById('filterCategorySelect').value;
+    const productCards = document.querySelectorAll('.product-card-item');
 
     productCards.forEach(card => {
         const titleElement = card.querySelector('.card-title');
-        if (titleElement) {
-            const productName = titleElement.textContent.toLowerCase();
-            if (productName.includes(searchInput)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+        const productName = titleElement ? titleElement.textContent.toLowerCase() : '';
+        const cardCategoryId = card.getAttribute('data-category-id');
+
+        const matchesSearch = productName.includes(searchInput);
+        const matchesCategory = selectedCategoryId === "" || cardCategoryId === selectedCategoryId;
+
+        if (matchesSearch && matchesCategory) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
         }
     });
 }
+
