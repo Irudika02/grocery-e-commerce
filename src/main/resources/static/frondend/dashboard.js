@@ -345,6 +345,34 @@ function loadMonthlyAnalytics() {
         .catch(error => console.error('Error loading monthly analytics:', error));
 }
 
+// Save New Category
+function saveCategory() {
+    const name = document.getElementById('newCategoryName').value.trim();
+    if (!name) {
+        alert("Please enter a category name!");
+        return;
+    }
+
+    fetch('http://localhost:8081/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name })
+    })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to save category');
+            return response.json();
+        })
+        .then(() => {
+            alert("Category added successfully!");
+            document.getElementById('newCategoryName').value = '';
+            loadCategories(); // Reload category dropdowns
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Failed to save category.");
+        });
+}
+
 
 
 
