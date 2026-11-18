@@ -263,3 +263,71 @@ function processCheckout() {
             alert("Failed to complete checkout.");
         });
 }
+// Print Thermal Receipt Function
+function printReceiptOnly() {
+    if (cart.length === 0) {
+        alert("Cart is empty! Nothing to print.");
+        return;
+    }
+    prepareReceiptData();
+    window.print();
+}
+
+// Prepare Data inside Thermal Receipt Template
+function prepareReceiptData() {
+    const tbody = document.getElementById('recTableBody');
+    tbody.innerHTML = '';
+
+    let grandTotal = 0;
+    cart.forEach(item => {
+        let itemTotal = item.sellingPrice * item.quantity;
+        grandTotal += itemTotal;
+        tbody.innerHTML += `
+<tr>
+<td style="text-align: left;">${item.name}</td>
+<td style="text-align: center;">${item.quantity}</td>
+<td style="text-align: right;">${itemTotal.toFixed(2)}</td>
+</tr>
+`;
+    });
+
+    const cashGiven = parseFloat(document.getElementById('cashGivenInput').value) || 0;
+    const balance = cashGiven - grandTotal;
+
+    document.getElementById('recReceiptNo').innerText = 'Inv: #' + Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('recDate').innerText = 'Date: ' + new Date().toLocaleString();
+    document.getElementById('recCustomer').innerText = 'Customer: ' + (document.getElementById('customerNameInput').value || 'Walk-in Customer');
+    document.getElementById('recGrandTotal').innerText = 'Rs. ' + grandTotal.toFixed(2);
+    document.getElementById('recCashGiven').innerText = 'Rs. ' + cashGiven.toFixed(2);
+    document.getElementById('recBalance').innerText = 'Rs. ' + balance.toFixed(2);
+}
+
+// Share Bill via WhatsApp
+function shareOnWhatsApp() {
+    if (cart.length === 0) {
+        alert("Cart is empty! No bill to share.");
+        return;
+    }
+
+    let customerName = document.getElementById('customerNameInput').value || "Walk-in Customer";
+    let grandTotal = 0;
+
+    let message = `🛒 *WIJENAYAKE STORES - BILL* 🛒\n`;
+    message += `👤 Customer: ${customerName}\n`;
+    message += `📅 Date: ${new Date().toLocaleString()}\n`;
+    message += `--------------------------------\n`;
+
+    cart.forEach((item, index) => {
+        let itemTotal = item.sellingPrice * item.quantity;
+        grandTotal += itemTotal;
+        message += `${index + 1}. ${item.name} x ${item.quantity} = Rs. ${itemTotal.toFixed(2)}\n`;
+    });
+
+    message += `--------------------------------\n`;
+    message += `💰 *Grand Total: Rs. ${grandTotal.toFixed(2)}*\n`;
+    message += `🙏 Thank you for shopping with us!\n`;
+
+    const encodedMessage = encodeURIComponent(message);
+// Opens WhatsApp Web or App with pre-filled message
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+}

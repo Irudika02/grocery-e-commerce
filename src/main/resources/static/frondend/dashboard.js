@@ -355,24 +355,12 @@ function saveCategory() {
 
     fetch('http://localhost:8081/api/categories', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name })
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: name})
     })
         .then(response => {
             if (!response.ok) throw new Error('Failed to save category');
             return response.json();
         })
-        .then(() => {
-            alert("Category added successfully!");
-            document.getElementById('newCategoryName').value = '';
-            loadCategories(); // Reload category dropdowns
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("Failed to save category.");
-        });
 }
-
-
-
 

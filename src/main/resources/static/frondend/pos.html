@@ -114,11 +114,78 @@
 
                     <!-- Checkout Button -->
                     <button class="btn btn-success btn-lg w-100 fw-bold" onclick="processCheckout()">✅ Complete Bill & Print</button>
+                    <!-- WhatsApp & Print Buttons -->
+                    <div class="row g-2 mt-2">
+                        <div class="col-6">
+                            <button class="btn btn-outline-success w-100 fw-bold" onclick="shareOnWhatsApp()">💬 WhatsApp Bill</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100 fw-bold" onclick="printReceiptOnly()">🖨️ Print Receipt</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Hidden Thermal Receipt for Printing -->
+<div id="thermalReceipt" style="display: none; font-family: 'Courier New', Courier, monospace; width: 58mm; padding: 5px; font-size: 12px; color: #000;">
+    <div class="text-center mb-2">
+        <h5 class="fw-bold mb-0">VIJAYANAYAKA STORES</h5>
+        <p class="small mb-0">Arandara, Kegalle</p>
+        <p class="small mb-1">Tel: 035-XXXXXXX</p>
+        <span>--------------------------------</span>
+    </div>
+    <div class="mb-2">
+        <span id="recReceiptNo">Inv: #001</span><br>
+        <span id="recDate">Date: 2026-06-07</span><br>
+        <span id="recCustomer">Customer: Walk-in</span>
+    </div>
+    <span>--------------------------------</span>
+    <table style="width: 100%; font-size: 11px;">
+        <thead>
+        <tr>
+            <th style="text-align: left;">Item</th>
+            <th style="text-align: center;">Qty</th>
+            <th style="text-align: right;">Total</th>
+        </tr>
+        </thead>
+        <tbody id="recTableBody">
+        <!-- Dynamic items -->
+        </tbody>
+    </table>
+    <span>--------------------------------</span>
+    <div style="font-size: 12px;">
+        <div class="d-flex justify-content-between"><span>Grand Total:</span> <span id="recGrandTotal">Rs. 0.00</span></div>
+        <div class="d-flex justify-content-between"><span>Cash Given:</span> <span id="recCashGiven">Rs. 0.00</span></div>
+        <div class="d-flex justify-content-between fw-bold"><span>Balance:</span> <span id="recBalance">Rs. 0.00</span></div>
+    </div>
+    <span>--------------------------------</span>
+    <div class="text-center mt-2" style="font-size: 11px;">
+        <p class="mb-0">Thank You Come Again!</p>
+        <p>Software by Irudika Wijenayake</p>
+    </div>
+</div>
+
+<!-- Thermal Print CSS Styling -->
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #thermalReceipt, #thermalReceipt * {
+            visibility: visible;
+        }
+        #thermalReceipt {
+            display: block !important;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 58mm;
+        }
+    }
+</style>
+
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
