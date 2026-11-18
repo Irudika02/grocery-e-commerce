@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     loadCategories(); // Categories ටික Dropdown එකට load කරගැනීමට
     loadDashboardAnalytics();
     loadOrderHistory(); // Order History එක load කරගැනීමට
+    loadMonthlyAnalytics();
 
 // Handle Add Product Form
     const productForm = document.getElementById('productForm');
@@ -301,5 +302,49 @@ function loadOrderHistory() {
         })
         .catch(error => console.error('Error loading orders:', error));
 }
+
+// Load Monthly Analytics Data
+function loadMonthlyAnalytics() {
+    fetch('http://localhost:8081/api/orders')
+        .then(response => response.json())
+        .then(orders => {
+            let monthlyRevenue = 0;
+            let monthlyCost = 0;
+            let monthlyProfit = 0;
+
+// වර්තමාන මාසය සහ අවුරුද්ද ලබා ගැනීම (လက်ရှိ თვე/வருடம்)
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth(); // 0 - 11
+            const currentYear = currentDate.getFullYear();
+
+            orders.forEach(order => {
+// order එකේ දිනය ඇතැයි ধরে ගනිමු (order.date හෝ order.createdAt වැනි field එකක් තිබේ නම්)
+// දැනට සියලුම orders වර්තමාන මාසයට අදාළ යැයි සලකා හෝ date field එක පරීක්ෂා කර ගණනය කළ හැක.
+// උදාහරණයක් ලෙස order එකේ date එක තිබේ නම්:
+                /*
+                if (order.date) {
+                const orderDate = new Date(order.date);
+                if (orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear) {
+                monthlyRevenue += order.totalPrice;
+                monthlyProfit += order.totalProfit;
+                monthlyCost += (order.totalPrice - order.totalProfit);
+                }
+                }
+                */
+
+// දැනට සියලුම ඇණවුම් එකතු කර පෙන්වීමට (Backend එකේ date field එකක් නැති නම් මෙලෙස පෙන්විය හැක):
+                monthlyRevenue += order.totalPrice;
+                monthlyProfit += order.totalProfit;
+                monthlyCost += (order.totalPrice - order.totalProfit);
+            });
+
+            document.getElementById('monthlyRevenueAmount').innerText = 'Rs. ' + monthlyRevenue.toFixed(2);
+            document.getElementById('monthlyCostAmount').innerText = 'Rs. ' + monthlyCost.toFixed(2);
+            document.getElementById('monthlyProfitAmount').innerText = 'Rs. ' + monthlyProfit.toFixed(2);
+        })
+        .catch(error => console.error('Error loading monthly analytics:', error));
+}
+
+
 
 
