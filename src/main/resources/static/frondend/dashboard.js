@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     loadProducts();
-    loadCategories(); // Categories ටික Dropdown එකට લોඩ් කරගන්න
+    loadCategories(); // Categories ටික Dropdown එකට load කරගැනීමට
     loadDashboardAnalytics();
+    loadOrderHistory(); // Order History එක load කරගැනීමට
 
 // Handle Add Product Form
     const productForm = document.getElementById('productForm');
@@ -99,7 +100,6 @@ function loadProducts() {
                 let categoryName = product.category ? product.category.name : 'Uncategorized';
                 let categoryId = product.category ? product.category.id : '';
 
-// product-card-item සහ data-category-id එක එකතු කර ඇත
                 const productCard = `
 <div class="col-md-4 mb-4 product-card-item" data-category-id="${categoryId}">
 <div class="card shadow-sm ${stockAlertClass} h-100 rounded-3">
@@ -115,6 +115,9 @@ function loadProducts() {
 <button class="btn btn-warning btn-sm fw-bold w-50" onclick="openEditModal(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity}, ${categoryId})">Edit</button>
 <button class="btn btn-danger btn-sm fw-bold w-50" onclick="deleteProduct(${product.id})">Delete</button>
 </div>
+<div class="mt-2">
+<button class="btn btn-outline-success btn-sm w-100 fw-bold" onclick="quickAddStock(${product.id}, '${product.name}', ${product.weight}, ${product.costPrice}, ${product.sellingPrice}, ${product.stockQuantity})">➕ Quick Add Stock</button>
+</div>
 </div>
 </div>
 </div>
@@ -126,7 +129,8 @@ function loadProducts() {
             console.error('Error fetching products:', error);
         });
 }
-// Load Categories into Dropdowns (Form එකට සහ Filter එකට දෙකටම)
+
+// Load Categories into Dropdowns
 function loadCategories() {
     fetch('http://localhost:8081/api/categories')
         .then(response => response.json())
@@ -151,6 +155,27 @@ function loadCategories() {
         .catch(error => console.error('Error loading categories:', error));
 }
 
+// Filter Products by Search Input & Category Dropdown
+function filterProducts() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const selectedCategoryId = document.getElementById('filterCategorySelect').value;
+    const productCards = document.querySelectorAll('.product-card-item');
+
+    productCards.forEach(card => {
+        const titleElement = card.querySelector('.card-title');
+        const productName = titleElement ? titleElement.textContent.toLowerCase() : '';
+        const cardCategoryId = card.getAttribute('data-category-id');
+
+        const matchesSearch = productName.includes(searchInput);
+        const matchesCategory = selectedCategoryId === "" || cardCategoryId === selectedCategoryId;
+
+        if (matchesSearch && matchesCategory) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
 
 // Open Edit Modal
 function openEditModal(id, name, weight, costPrice, sellingPrice, stockQuantity, categoryId) {
@@ -190,6 +215,41 @@ function deleteProduct(id) {
     }
 }
 
+// Quick Stock Update Function
+function quickAddStock(id, currentName, currentWeight, currentCost, currentSelling, currentStock) {
+    const qtyToAdd = prompt(`Enter quantity to add to stock for "${currentName}":`, "10");
+    if (qtyToAdd !== null && !isNaN(qtyToAdd) && qtyToAdd.trim() !== "") {
+        const updatedStock = currentStock + parseInt(qtyToAdd);
+
+        const updatedProduct = {
+            name: currentName,
+            weight: currentWeight,
+            costPrice: currentCost,
+            sellingPrice: currentSelling,
+            stockQuantity: updatedStock
+        };
+
+        fetch(`http://localhost:8081/api/products/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedProduct)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to update stock');
+                return response.json();
+            })
+            .then(data => {
+                alert(`Stock updated successfully! New stock: ${updatedStock}`);
+                loadProducts();
+                loadDashboardAnalytics();
+            })
+            .catch(error => {
+                console.error('Error updating stock:', error);
+                alert("Failed to update stock.");
+            });
+    }
+}
+
 // Load Analytics Data
 function loadDashboardAnalytics() {
     fetch('http://localhost:8081/api/orders')
@@ -211,25 +271,35 @@ function loadDashboardAnalytics() {
         })
         .catch(error => console.error('Error loading analytics:', error));
 }
-// Filter Products by Search Input & Category Dropdown
-function filterProducts() {
-    const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    const selectedCategoryId = document.getElementById('filterCategorySelect').value;
-    const productCards = document.querySelectorAll('.product-card-item');
 
-    productCards.forEach(card => {
-        const titleElement = card.querySelector('.card-title');
-        const productName = titleElement ? titleElement.textContent.toLowerCase() : '';
-        const cardCategoryId = card.getAttribute('data-category-id');
+// Load Order History Table
+function loadOrderHistory() {
+    fetch('http://localhost:8081/api/orders')
+        .then(response => response.json())
+        .then(orders => {
+            const orderTableBody = document.getElementById('orderTableBody');
+            if (!orderTableBody) return;
 
-        const matchesSearch = productName.includes(searchInput);
-        const matchesCategory = selectedCategoryId === "" || cardCategoryId === selectedCategoryId;
+            orderTableBody.innerHTML = '';
 
-        if (matchesSearch && matchesCategory) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+            if (orders.length === 0) {
+                orderTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No orders found.</td></tr>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const orderRow = `
+<tr>
+<td>#${order.id}</td>
+<td class="fw-bold text-success">Rs. ${order.totalPrice.toFixed(2)}</td>
+<td class="fw-bold text-primary">Rs. ${order.totalProfit.toFixed(2)}</td>
+<td><span class="badge bg-success">Completed</span></td>
+</tr>
+`;
+                orderTableBody.innerHTML += orderRow;
+            });
+        })
+        .catch(error => console.error('Error loading orders:', error));
 }
+
 
